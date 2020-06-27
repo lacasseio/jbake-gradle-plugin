@@ -15,16 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbake.gradle
+package org.jbake.gradle.impl
 
-interface JBakeProxy {
-    def jbake()
+import org.gradle.workers.WorkAction
 
-    def prepare()
-
-    def getConfig()
-
-    def setConfig(Object config)
-
-    List<String> getErrors()
+/**
+ * Wrapper over the old worker API.
+ *
+ * Once the minimum supported Gradle version is above 5.6, we can merge JBakeWorkRunnable into JBakeWorkAction.
+ */
+abstract class JBakeWorkAction implements WorkAction<JBakeWorkActionParameters> {
+    @Override
+    void execute() {
+        new JBakeWorkRunnable(parameters.input.get().asFile, parameters.output.get().asFile, parameters.clearCache.get(), parameters.configuration.get()).run()
+    }
 }

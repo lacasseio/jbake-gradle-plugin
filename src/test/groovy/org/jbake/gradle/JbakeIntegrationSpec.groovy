@@ -68,7 +68,11 @@ class JbakeIntegrationSpec extends PluginIntegrationSpec {
 
         then:
         result.task(':bake').outcome == SUCCESS
-        result.output.contains('Baked 11 items')
+
+        // See https://github.com/gradle/gradle/issues/8318
+        if (version != '5.0') {
+            result.output.contains('Baked 11 items')
+        }
 
         blogTagFile.size() > 0
 
